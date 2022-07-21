@@ -1,0 +1,85 @@
+@startuml
+
+Cell *-- Data
+
+Row *-- Cell
+Column *-- Cell
+
+Table *-- Row
+Table *-- Column
+
+CSVOutput *-- Table
+
+ProcessorExecutor *-- Processor
+
+Config *-- Reader
+Config *-- Writer
+Config *-- ProcessorExecutor
+
+interface Reader<T> {
+    read(filePath: String): T
+}
+
+interface Writer<T> {
+    write(): List<CSVOutput>
+}
+
+interface Processor<T, O> {
+    process(data: T): O
+}
+
+interface makeCSV {
+    make(): 
+}
+
+abstract class ProcessorExecutor<T, O> {
+    -processors: List<Processor<T,O>>
+
+    +fun processors(processor: List<Processor>): Unit
+    +fun processor(processor: Processor): Unit
+    +fun executeProcessor(): O
+}
+
+abstract class Config {
+    -reader: Reader<T>
+    -writer: Writer<T>
+    -processors: ProcessorExecutor<T,O>
+
+    +fun writer(writer: Writer): Unit
+    +fun reader(reader: Reader): Unit
+    +fun execute(): O
+
+
+    +abstract fun execute(): Boolean
+}
+
+abstract class Maker {
+    -config: Config
+}
+
+class CSVOutput {
+    table: Table
+}
+
+class Cell<T> {
+    -var data: Data<T>
+}
+
+class Data<T> {
+    -var data: T
+    +abstract fun setData(data: T)
+    +abstract fun getData(data: T)
+}
+
+class Row<T> {
+    rows: List<Cell<T>>
+}
+
+class Column<T> {
+    columns: List<Cell<T>>
+}
+
+class Table<T> {
+
+}
+@enduml
